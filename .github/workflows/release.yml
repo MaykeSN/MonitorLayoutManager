@@ -1,0 +1,34 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "9.0.x"
+
+      - name: Build
+        run: dotnet build MonitorLayoutManager.csproj -c Release
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ github.ref_name }}
+          body: |
+            ## Download
+
+            Baixe o `MonitorLayoutManager.exe` abaixo e execute diretamente — sem instalação.
+
+            **Requisito:** Windows 10 1903+ ou Windows 11 (o .NET Framework 4.8 já vem instalado).
+          files: bin/Release/net48/MonitorLayoutManager.exe
